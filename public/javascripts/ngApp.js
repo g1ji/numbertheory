@@ -70,21 +70,17 @@ angular.module('numThrApp', [])
                 }
                 );
             };
-                socket.on('chartData', function (treeChartData) {
-                    console.log(treeChartData)
-                    if (!$scope.update_tree) {
-                        $scope.drowTreeChart(treeChartData)
-                    } else {
-                        window.flare = treeChartData;
-                        $scope.update_tree($scope.tree)
-                    }
+            socket.on('chartData', function (treeChartData) {
+                console.log(treeChartData)
+                if (!$scope.update_tree) {
+                    $scope.drowTreeChart(treeChartData)
+                } else {
+                    window.flare.children = treeChartData.children;
+                    $scope.update_tree($scope.tree)
+                }
 
-                })
+            });
             $scope.updateChart = function (update_tree, d) {
-                $scope.fileNodes = {
-                    start: 5,
-                    end: 8
-                };
                 socket.emit('readFile', {
                     fileName: $scope.uploadedfileName,
                     fileNodes: $scope.fileNodes
@@ -111,10 +107,7 @@ angular.module('numThrApp', [])
                         .attr("height", height + margin.top + margin.bottom)
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-// 1. Take a large size text file when streaming it through socket.
-// 2. d3.js visualization should be self explanatory with x and y axis and beautified.
-// 3. Line chart shluld be with respect to (string count in every 100 characters).
-// 3. Inputs and visualization should be on a same page.
+
                 window.flare = treeChartData;
                 root = window.flare;
                 root.x0 = height / 2;
@@ -126,9 +119,10 @@ angular.module('numThrApp', [])
                         d.children = null;
                     }
                 }
-                if (root && root.children) {
-                    root.children.forEach(collapse);
-                }
+
+//                if (root && root.children) { //unconnent to collaps default
+//                    root.children.forEach(collapse);
+//                }
                 d3.select(self.frameElement).style("height", "800px");
                 var update_tree = function (source) {
                     // Compute the new tree layout.
@@ -245,6 +239,17 @@ angular.module('numThrApp', [])
 //                        }, 2000);
                     }
                     if (d.name == "Next >>") {
+                        $scope.fileNodes = {
+                            start: $scope.fileNodes.start + 5,
+                            end: $scope.fileNodes.end + 5
+                        };
+                        $scope.updateChart(update_tree, d)
+                    }
+                    if (d.name == "Previous <<") {
+                        $scope.fileNodes = {
+                            start: $scope.fileNodes.start - 5,
+                            end: $scope.fileNodes.end - 5
+                        };
                         $scope.updateChart(update_tree, d)
                     }
                     update_tree(d);

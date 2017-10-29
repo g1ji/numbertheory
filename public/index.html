@@ -12,18 +12,24 @@
     <script src="javascripts/ngApp.js" type="text/javascript"></script>
     <script src="javascripts/socket.io.js" type="text/javascript"></script>        
 </head>
-
 <body ng-app="numThrApp" ng-controller="numThrCtrl"  ng-init='fileUploadPage = true;'>
-    <div class="btn-main" ng-show="fileUploadPage">
-        <div class="upload-btn-wrapper">
-            <input type="file" id='txtFile' file-model="myFile" name="myfile" accept=".txt"/>
-            <!--<input type="file" id='txtFile' file-model = "myFile"  onchange="angular.element(this).scope().fileNameChange(this);" name="myfile" accept=".txt,''"/>-->
-            <label class="brows-btn">
-                Upload a [.txt] file
-            </label>
+    <div>
+        <div class="btn-main" ng-show="fileUploadPage">
+            <div class="upload-btn-wrapper">
+                <input type="file" id='txtFile' file-model="myFile" name="myfile" accept=".txt"/>
+                <!--<input type="file" id='txtFile' file-model = "myFile"  onchange="angular.element(this).scope().fileNameChange(this);" name="myfile" accept=".txt,''"/>-->
+                <label class="brows-btn">
+                    Click here to<br/>
+                    Upload a [.txt] file
+                </label>
+            </div>
+            <button class="btn  btn-success btn-xs btn-block" ng-show='myFile' ng-click="uploadFile()">Process file</button>
+            <div  ng-show='uploading' >Uploading...</div>
         </div>
-        <button class="btn  btn-success btn-xs btn-block" ng-show='myFile' ng-click="uploadFile()">Process file</button>
-        <div  ng-show='uploading' >Uploading...</div>
+        1. Take a large size text file when streaming it through socket.</br>
+        2. d3.js visualization should be self explanatory with x and y axis and beautified.</br>
+        3. Line chart shluld be with respect to (string count in every 100 characters).</br>
+        3. Inputs and visualization should be on a same page.</br>
     </div>
     <div ng-show="!fileUploadPage">
         <span class='seefile' ng-click='openUplodedFile()'>
