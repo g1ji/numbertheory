@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title> File string info </title>
+    <link rel="shortcut icon" href="images/fev.jpg" />
+    <script src="bower_components/angular/angular.min.js" type="text/javascript"></script>
+    <link href="stylesheets/style.css" rel="stylesheet" type="text/css"/>
+    <script src="/bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <script src="bower_components/d3/d3.min.js" type="text/javascript"></script>
+    <script src="javascripts/ngApp.js" type="text/javascript"></script>
+    <script src="javascripts/socket.io.js" type="text/javascript"></script>        
+</head>
+
+<body ng-app="numThrApp" ng-controller="numThrCtrl"  ng-init='fileUploadPage = true;'>
+    <div class="btn-main" ng-show="fileUploadPage">
+        <div class="upload-btn-wrapper">
+            <input type="file" id='txtFile' file-model="myFile" name="myfile" accept=".txt"/>
+            <!--<input type="file" id='txtFile' file-model = "myFile"  onchange="angular.element(this).scope().fileNameChange(this);" name="myfile" accept=".txt,''"/>-->
+            <label class="brows-btn">
+                Upload a [.txt] file
+            </label>
+        </div>
+        <button class="btn  btn-success btn-xs btn-block" ng-show='myFile' ng-click="uploadFile()">Process file</button>
+        <div  ng-show='uploading' >Uploading...</div>
+    </div>
+    <div ng-show="!fileUploadPage">
+        <span class='seefile' ng-click='openUplodedFile()'>
+            See file content...
+        </span>
+        <div id="svg-chart" >
+        </div>
+    </div>
+</body>
+</html>
+<script src="javascripts/drowD3.js" type="text/javascript"></script>

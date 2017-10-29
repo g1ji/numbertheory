@@ -5,8 +5,12 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('untitled-folder:server');
+var debug = require('debug')('filestringinfo:server');
 var http = require('http');
+var path = require("path");
+var pathSep = path.sep
+var fs = require('fs')
+
 
 /**
  * Get port from environment and store in Express.
@@ -34,19 +38,19 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+    var port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+    if (port >= 0) {
+        // port number
+        return port;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -54,27 +58,27 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+    var bind = typeof port === 'string'
+            ? 'Pipe ' + port
+            : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
 }
 
 /**
@@ -82,9 +86,75 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+            ? 'pipe ' + addr
+            : 'port ' + addr.port;
+    debug('Listening on ' + bind);
 }
+
+var targetDir = path.resolve(__dirname + "/../public/uploads");
+var io = require('socket.io').listen(server);
+io.on('connection', function (socket) {
+    socket.on('readFile', function (info) {
+        var uploadeFile = targetDir + "/" + info.fileName;
+        var data = fs.readFileSync(uploadeFile);
+        var noOfLinesInFile = data.toString().split('\n').length - 1;
+        var noOfCharIntoFile = data.toString().length;
+        var noOfGroupOf100 = parseInt(noOfCharIntoFile / 100) + ((noOfCharIntoFile % 100) === 0 ? 0 : 1);
+        var uploadedFileName = info.fileName;
+        var groupOf100chrs = data.toString().split('\n').join(' ').match(/.{1,100}/g);
+        var fileNodes = info.fileNodes;
+        var chartData = {
+            "name": 'Uploaded file',
+            "children": [
+                {
+                    "name": "Info",
+                    "children": [
+                        {"name": "Name:" + uploadedFileName},
+                        {"name": "Line count:" + noOfLinesInFile},
+                        {"name": "Group of 100 [count]: " + noOfGroupOf100}
+                    ]
+                }, {
+                    "name": "Characters Groups",
+                    "children": []
+                }
+            ]
+        };
+        if (fileNodes.start > 0) {
+            chartData.children[1].children.push({"name": 'Next >>'});
+        }
+        groupOf100chrs.forEach(function (group, index) {
+            if (index >= fileNodes.start, index <= fileNodes.end) {
+                var child = {"name": (index + 1) + "-" + (index + 1) * 100,
+                    "children": [
+                        {"name": "Characters count : 100"},
+                        {"name": "String count: " + group.split('').length},
+                        {"name": group},
+                        {"name": "words",
+                            "children": []
+                        }
+                    ]
+                };
+                group.split(' ').forEach(function (word) {
+                    child.children[3].children.push({"name": word});
+                });
+                chartData.children[1].children.push(child);
+            }
+        });
+        if (fileNodes.end < noOfGroupOf100) {
+            chartData.children[1].children.push({"name": 'Next >>'});
+        }
+        socket.emit('chartData', chartData);
+console.log(chartData)
+    });
+
+
+
+
+
+    socket.on('disconnect', function () {
+        console.log('user disconnected');
+    });
+});
+

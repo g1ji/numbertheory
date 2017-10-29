@@ -1,8 +1,73 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-
 a {
-  color: #00B7FF;
+    color: #00B7FF;
+}
+.node {
+    cursor: pointer;
+}
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+.node text {
+    font: 10px sans-serif;
+}
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
+.btn-main{
+    text-align: center;
+    width: 200px;
+    margin-top: 25vh !important;
+    margin: 0 auto;
+}
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+.brows-btn {
+    border-radius: 50%;
+    width: 200px !important;
+    height: 225px !important;
+    background-image:url(../images/txt.svg) !important;
+    padding-top: 194px !important;
+    font-weight: bold !important;
+    font-size: 22px !important;
+    background-repeat: no-repeat;
+    cursor: pointer !important;
+}
+.upload-btn-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+.uploading{
+    position: absolute;
+    top: 0px;
+    border: 2px solid;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background: black;
+    opacity: .5;
+}
+.bar{
+    width: 22%;
+    background-color: aqua;
+    border: 2px solid;
+    height: 30px;
+}
+.seefile{
+    cursor: pointer;
 }

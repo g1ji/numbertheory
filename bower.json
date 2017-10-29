@@ -1,0 +1,11 @@
+{
+  "name": "filestringinfo",
+  "version": "0.0.0",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "angular": "^1.6.6",
+    "d3.chart": "^0.3.0"
+  },
+  "devDependencies": {},
+  "appPath": "app"
+}
