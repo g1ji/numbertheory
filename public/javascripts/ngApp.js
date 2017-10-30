@@ -22,30 +22,20 @@ angular.module('numThrApp', [])
                         transformRequest: angular.identity,
                         headers: {'Content-Type': undefined}
                     }).then(function (success) {
-
-                        console.log(success)
-                        console.log(file)
                         scope.uploading = false;
                         scope.fileUploadPage = false;
                         scope.uploadedfileName = file.name;
                         scope.getTreeChartData();
-
-
                     }, function (error) {
-                        console.log(error)
+                        console.log(error);
                         scope.uploading = false;
                     });
-                }
+                };
             }])
         .controller('numThrCtrl', function ($scope, fileUpload) {
             var socket = io();
-
-            $scope.fileNameChange = function (file) {
-
-            };
             $scope.openUplodedFile = function (file) {
                 window.open('/uploads/' + $scope.uploadedfileName, '_blank');
-
             };
             $scope.uploadFile = function () {
                 $scope.uploading = true;
@@ -56,19 +46,16 @@ angular.module('numThrApp', [])
                 }
                 var uploadUrl = "/fileUpload";
                 fileUpload.uploadFileToUrl(file, uploadUrl, $scope);
-
             };
             $scope.fileNodes = {
                 start: 0,
-                end: 4
+                end: 1
             };
             $scope.getTreeChartData = function () {
-
                 socket.emit('readFile', {
                     fileName: $scope.uploadedfileName,
                     fileNodes: $scope.fileNodes
-                }
-                );
+                });
             };
             socket.on('chartData', function (treeChartData) {
                 console.log(treeChartData)
@@ -119,25 +106,17 @@ angular.module('numThrApp', [])
                         d.children = null;
                     }
                 }
-
-//                if (root && root.children) { //unconnent to collaps default
-//                    root.children.forEach(collapse);
-//                }
                 d3.select(self.frameElement).style("height", "800px");
                 var update_tree = function (source) {
-                    // Compute the new tree layout.
                     var nodes = tree.nodes(root).reverse(),
                             links = tree.links(nodes);
-                    // Normalize for fixed-depth.
                     nodes.forEach(function (d) {
                         d.y = d.depth * 180;
                     });
-                    // Update the nodes…
                     var node = svg.selectAll("g.node")
                             .data(nodes, function (d) {
                                 return d.id || (d.id = ++i);
                             });
-                    // Enter any new nodes at the parent's previous position.
                     var nodeEnter = node.enter().append("g")
                             .attr("class", "node")
                             .attr("transform", function (d) {
@@ -161,7 +140,6 @@ angular.module('numThrApp', [])
                                 return d.name;
                             })
                             .style("fill-opacity", 1e-6);
-                    // Transition nodes to their new position.
                     var nodeUpdate = node.transition()
                             .duration(duration)
                             .attr("transform", function (d) {
@@ -174,7 +152,6 @@ angular.module('numThrApp', [])
                             });
                     nodeUpdate.select("text")
                             .style("fill-opacity", 1);
-                    // Transition exiting nodes to the parent's new position.
                     var nodeExit = node.exit().transition()
                             .duration(duration)
                             .attr("transform", function (d) {
@@ -185,23 +162,19 @@ angular.module('numThrApp', [])
                             .attr("r", 1e-6);
                     nodeExit.select("text")
                             .style("fill-opacity", 1e-6);
-                    // Update the links…
                     var link = svg.selectAll("path.link")
                             .data(links, function (d) {
                                 return d.target.id;
                             });
-                    // Enter any new links at the parent's previous position.
                     link.enter().insert("path", "g")
                             .attr("class", "link")
                             .attr("d", function (d) {
                                 var o = {x: source.x0, y: source.y0};
                                 return diagonal({source: o, target: o});
                             });
-                    // Transition links to their new position.
                     link.transition()
                             .duration(duration)
                             .attr("d", diagonal);
-                    // Transition exiting nodes to the parent's new position.
                     link.exit().transition()
                             .duration(duration)
                             .attr("d", function (d) {
@@ -209,15 +182,13 @@ angular.module('numThrApp', [])
                                 return diagonal({source: o, target: o});
                             })
                             .remove();
-                    // Stash the old positions for transition.
                     nodes.forEach(function (d) {
                         d.x0 = d.x;
                         d.y0 = d.y;
                     });
-                }
+                };
                 update_tree(root);
                 window.update_tree = update_tree;
-// Toggle children on click.
                 function tree_node_click(d) {
                     if (d.children) {
                         d._children = d.children;
@@ -225,34 +196,22 @@ angular.module('numThrApp', [])
                     } else {
                         d.children = d._children;
                         d._children = null;
-//                        setTimeout(function () {
-//                            window.flare.children.push({
-//                                "name": "Info",
-//                                "children": [
-//                                    {"name": "Name:"},
-//                                    {"name": "Line count:"},
-//                                    {"name": "Group of 100 {count}: ", }
-//                                ]
-//                            });
-//                            // d.parent.click()
-//                            update_tree(d);
-//                        }, 2000);
                     }
-                    if (d.name == "Next >>") {
+                    if (d.name === "Next >>") {
                         $scope.fileNodes = {
-                            start: $scope.fileNodes.start + 5,
-                            end: $scope.fileNodes.end + 5
+                            start: $scope.fileNodes.start + 2,
+                            end: $scope.fileNodes.end + 2
                         };
-                        $scope.updateChart(update_tree, d)
+                        $scope.updateChart(update_tree, d);
                     }
-                    if (d.name == "Previous <<") {
+                    if (d.name === "Previous <<") {
                         $scope.fileNodes = {
-                            start: $scope.fileNodes.start - 5,
-                            end: $scope.fileNodes.end - 5
+                            start: $scope.fileNodes.start - 2,
+                            end: $scope.fileNodes.end - 2
                         };
-                        $scope.updateChart(update_tree, d)
+                        $scope.updateChart(update_tree, d);
                     }
                     update_tree(d);
                 }
-            }
+            };
         });

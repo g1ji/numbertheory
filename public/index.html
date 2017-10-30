@@ -13,11 +13,10 @@
     <script src="javascripts/socket.io.js" type="text/javascript"></script>        
 </head>
 <body ng-app="numThrApp" ng-controller="numThrCtrl"  ng-init='fileUploadPage = true;'>
-    <div>
-        <div class="btn-main" ng-show="fileUploadPage">
+    <div  ng-show="fileUploadPage">
+        <div class="btn-main">
             <div class="upload-btn-wrapper">
                 <input type="file" id='txtFile' file-model="myFile" name="myfile" accept=".txt"/>
-                <!--<input type="file" id='txtFile' file-model = "myFile"  onchange="angular.element(this).scope().fileNameChange(this);" name="myfile" accept=".txt,''"/>-->
                 <label class="brows-btn">
                     Click here to<br/>
                     Upload a [.txt] file
@@ -40,4 +39,3 @@
     </div>
 </body>
 </html>
-<script src="javascripts/drowD3.js" type="text/javascript"></script>
